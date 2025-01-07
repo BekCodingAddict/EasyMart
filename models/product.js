@@ -1,10 +1,5 @@
 const Cart = require("./cart");
 const db = require("../util/database");
-const p = path.join(
-  path.dirname(process.mainModule.filename),
-  "data",
-  "products.json"
-);
 
 const getProductsFromFile = (callback) => {
   fs.readFile(p, (err, fileContent) => {
@@ -25,7 +20,12 @@ module.exports = class Product {
     this.price = price;
   }
 
-  save() {}
+  save() {
+    return db.execute(
+      "INSERT INTO products (title,price,description,imageURL) VALUES(?,?,?,?)",
+      [this.title, this.price, this.description, this.imageURL]
+    );
+  }
 
   static deleteById(id) {}
 
