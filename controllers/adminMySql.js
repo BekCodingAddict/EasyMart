@@ -13,13 +13,10 @@ const postAddProduct = (req, res, next) => {
   const imageURL = req.body.imageURL;
   const price = req.body.price;
   const description = req.body.description;
-  Product.create({
-    title: title,
-    price: price,
-    imageURL: imageURL,
-    description: description,
-  })
-    .then((result) => console.log("New Product created!"))
+  const product = new Product(null, title, imageURL, description, price);
+  product
+    .save()
+    .then(() => res.redirect("/"))
     .catch((err) => console.log(err));
 };
 
