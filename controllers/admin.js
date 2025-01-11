@@ -29,18 +29,17 @@ const getEditProduct = (req, res, next) => {
     return res.redirect("/");
   }
   const productId = req.params.productId;
-  Product.findById(productId, (product) => {
-    if (!product) {
-      return res.redirect("/");
-    }
-    console.log(product);
-    res.render("admin/edit-product", {
-      pageTitle: "Edit Product",
-      path: "/admin/edit-product",
-      editing: editMode,
-      product: product,
-    });
-  });
+
+  Product.findByPk(productId)
+    .then((product) => {
+      res.render("admin/edit-product", {
+        pageTitle: "Edit Product",
+        path: "/admin/edit-product",
+        editing: editMode,
+        product: product,
+      });
+    })
+    .catch((err) => console.log(err));
 };
 
 const postEditProduct = (req, res, next) => {
@@ -49,16 +48,19 @@ const postEditProduct = (req, res, next) => {
   const updatedPrice = req.body.price;
   const updatedImageURL = req.body.imageURL;
   const updatedDesc = req.body.description;
-  const updatedProduct = new Product(
-    productId,
-    updatedTitle,
-    updatedImageURL,
-    updatedDesc,
-    updatedPrice
-  );
-
-  updatedProduct.save();
-  res.redirect("/admin/products");
+  Product.findByPk(productId)
+    .then((product) => {
+      product.title = updatedTitle;
+      product.price = updatedPrice;
+      product.imageURL = updatedImageURL;
+      product.description = updatedDesc;
+      return product.save();
+    })
+    .then((result) => {
+      console.log("Product has been updated!");
+      res.redirect("/admin/products");
+    })
+    .catch((err) => console.log(err));
 };
 
 const deleteProduct = (req, res, next) => {
