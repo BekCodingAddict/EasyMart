@@ -101,16 +101,12 @@ const postCart = (req, res, next) => {
 };
 
 const getOrders = (req, res, next) => {
-  res.render("shop/orders", {
-    pageTitle: "Your Orders",
-    path: "/oreders",
-  });
-};
-
-const getCheckout = (req, res, next) => {
-  res.render("shop/checkout", {
-    pageTitle: "Checkout",
-    path: "/checkout",
+  req.user.getOrders({ include: ["products"] }).then((orders) => {
+    res.render("shop/orders", {
+      pageTitle: "Your Orders",
+      path: "/oreders",
+      orders: orders,
+    });
   });
 };
 
@@ -132,9 +128,13 @@ const postCartDeleteProduct = (req, res, next) => {
 };
 
 const postOrder = (req, res, next) => {
+  let fetchedCart;
   req.user
     .getCart()
-    .then((cart) => cart.getProducts())
+    .then((cart) => {
+      fetchedCart = cart;
+      return cart.getProducts();
+    })
     .then((products) =>
       req.user
         .createOrder()
@@ -149,14 +149,19 @@ const postOrder = (req, res, next) => {
         .catch((err) => console.log(err))
         .catch((err) => console.log(err))
     )
-    .then((result) => res.redirect("/orders"))
+    .then((result) => {
+      return fetchedCart.setProducts(null);
+    })
+    .then((result) => {
+      res.redirect("/orders");
+    })
     .catch((err) => console.log(err));
 };
 
 module.exports = {
   getProducts,
   getIndex,
-  getCheckout,
+
   getCart,
   getOrders,
   getProduct,

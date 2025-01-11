@@ -3,7 +3,7 @@ const {
   getProducts,
   getIndex,
   getCart,
-  getCheckout,
+
   getOrders,
   getProduct,
   postOrder,
@@ -25,7 +25,6 @@ router.get("/products/:productId", getProduct);
 router.get("/cart", getCart);
 router.post("/cart", postCart);
 router.post("/cart-delete-item", postCartDeleteProduct);
-router.get("/checkout", getCheckout);
 router.get("/orders", getOrders);
 router.post("/create-order", postOrder);
 
