@@ -1,22 +1,94 @@
 <%- include('../includes/head.ejs') %>
-    </head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
 
-    <body>
-        <%- include('../includes/navigation.ejs') %>
-        <main>
-            <% if (products.length > 0) { %>
+        main {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        li:last-child {
+            border-bottom: none;
+        }
+
+        p {
+            margin: 0;
+            font-weight: bold;
+        }
+
+        h2 {
+            margin: 0;
+            font-size: 1.2em;
+            color: #666;
+        }
+
+        form {
+            margin: 0;
+        }
+
+        .btn {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #ff1a1a;
+        }
+
+        .no-product {
+            text-align: center;
+            color: #555;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('../includes/navigation.ejs') %>
+    <main>
+        <% if (products.length > 0) { %>
+            <ul>
                 <% products.forEach((p) => { %>
                     <li>
-                        <p><%= p.productData.title %> (<%= p.qty %>)</p>
+                        <p><%= p.title %> (<%= p.qty %>)</p>
+                        <h2>Quantity: <%= p.cartItem.quantity %></h2>
                         <form action="/cart-delete-item" method="POST">
-                            <input type="hidden" value='<%= p.productData.id %>' name="productId" >
+                            <input type="hidden" value='<%= p.id %>' name="productId">
                             <button class="btn" type="submit">Delete</button>
                         </form>
                     </li>
                 <% }) %>
-            <% } else { %>  <!-- Fix: add `else` here -->
-                <h1>No Product in Cart!</h1>
-            <% } %>
-        </main>
-        
-        <%- include('../includes/end.ejs') %>
+            </ul>
+        <% } else { %>
+            <h1 class="no-product">No Product in Cart!</h1>
+        <% } %>
+    </main>
+
+    <%- include('../includes/end.ejs') %>
