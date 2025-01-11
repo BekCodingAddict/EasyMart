@@ -9,6 +9,8 @@ const adminData = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const Cart = require("./models/cart");
 const CartItem = require("./models/cartItem");
+const Order = require("./models/order");
+const OrderItem = require("./models/orderItem");
 
 const app = express();
 //express Setting
@@ -33,16 +35,20 @@ app.use(shopRoutes);
 
 app.use(errorPage);
 
+//MySQL Reletionships
 Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
 User.hasMany(Product);
 User.hasOne(Cart);
 Cart.belongsTo(User);
 Cart.belongsToMany(Product, { through: CartItem });
 Product.belongsToMany(Cart, { through: CartItem });
+Order.belongsTo(User);
+User.hasMany(Order);
+Order.belongsToMany(Product, { through: OrderItem });
 
 sequelize
-  // .sync({ force: true })
-  .sync()
+  .sync({ force: true })
+  // .sync()
   .then((result) => {
     return User.findByPk(1);
     // console.log(result);
